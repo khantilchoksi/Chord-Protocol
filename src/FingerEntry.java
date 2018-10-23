@@ -1,4 +1,3 @@
-import ChordNode;
 
 public class FingerEntry {
     int m; // Bits
@@ -16,6 +15,15 @@ public class FingerEntry {
         this.m = m;
         this.n = n;
         this.k = k;
+        this.node = null;
+        initializeStart();
+    }
+
+    public FingerEntry(int m, int n, int k, ChordNode node) {
+        this.m = m;
+        this.n = n;
+        this.k = k;
+        this.node = node;
         initializeStart();
     }
 
