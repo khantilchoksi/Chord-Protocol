@@ -2,7 +2,6 @@ import java.util.*;
 
 public class ChordNode {
     int m;
-    int k;
     int value; // this is n
     ChordNode successor;
     ChordNode predecessor;
@@ -13,9 +12,17 @@ public class ChordNode {
     public ChordNode(int m, int value) {
         this.m = m;
         this.value = value;
-        fingerTable = new ArrayList<FingerEntry>(m + 1); // 1 to m elements are only useful
-        successor = null;
-        predecessor = null;
+        this.fingerTable = new ArrayList<FingerEntry>(m + 1); // 1 to m elements are only useful
+        add();
+    }
+
+    public void add() {
+        this.fingerTable.add(null);
+        for (int k = 1; k <= m; k++) {
+            fingerTable.add(new FingerEntry(m, this.value, k, this));
+        }
+        this.successor = this;
+        this.predecessor = null;
     }
 
     // Asking this node to find id's successor
@@ -43,8 +50,8 @@ public class ChordNode {
             ChordNode fingerNode = fingerTable.get(i).node;
             // Do I need to check for interval??
             // if (finger[i]∈(n,id))
-            if (n < id ? (fingerNode.value > this.value && tempNode.value < id)
-                    : !(fingerNode.value <= this.value && tempNode.value >= id)) {
+            if (this.value < id ? (fingerNode.value > this.value && fingerNode.value < id)
+                    : !(fingerNode.value <= this.value && fingerNode.value >= id)) {
                 return fingerNode;
             }
         }
@@ -57,15 +64,15 @@ public class ChordNode {
     // }
 
     // This node joins the ring containing any arbitary node n'
-    public void joing(ChordNode arbitaryNode) {
+    public void join(ChordNode arbitaryNode) {
         if (arbitaryNode != null) {
             initFingerTable(arbitaryNode);
             updateOthers();
             // move keys in (predecessor, n] from successor --> ??
         } else {
             // this is the only node in the chord
-            for (int i = 1; i <= m; i++) {
-                fingerTable.set(i, new FingerEntry(m, n, k, this));
+            for (int k = 1; k <= m; k++) {
+                fingerTable.set(k, new FingerEntry(m, this.value, k, this));
             }
             this.predecessor = this;
         }
@@ -77,9 +84,10 @@ public class ChordNode {
         // First finger table entry
         FingerEntry firstEntry = new FingerEntry(m, this.value, 1);
         firstEntry.node = arbitaryNode.findSuccessor(firstEntry.intervalStart);
-
         fingerTable.set(1, firstEntry);
-        this.successor = firstEntry.no;
+
+        // Finger table's first entry is the successor for that node
+        this.successor = firstEntry.node;
 
         this.predecessor = this.successor.predecessor;
         this.successor.predecessor = this;
@@ -139,4 +147,28 @@ public class ChordNode {
     // public int getStart(int m, int n, int k) {
     // return (n + (int) Math.pow(2, k - 1)) % (int) (Math.pow(2, m));
     // }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Node: " + this.value);
+
+        builder.append(" suc: " + this.successor.value + " , ");
+
+        if (this.predecessor != null) {
+            builder.append(" pre: " + this.predecessor.value);
+        } else {
+            builder.append(" pre: None");
+        }
+
+        builder.append(" finger: ");
+        // Finger table
+        for (int i = 1; i < m; i++) {
+            builder.append(fingerTable.get(i).node.value + ", ");
+        }
+        builder.append(fingerTable.get(m).node.value);
+
+        return builder.toString();
+    }
+
 }
