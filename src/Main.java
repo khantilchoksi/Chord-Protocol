@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Hello");
-        int m = ; // 2 ** m = number of nodes
+        int m = 3; // 2 ** m = number of nodes
         int maxNodes = (int) Math.pow(2, m);
 
         Scanner inputScanner = new Scanner(System.in);

@@ -22,12 +22,14 @@ public class ChordNode {
             fingerTable.add(new FingerEntry(m, this.value, k, this));
         }
         this.successor = this;
-        this.predecessor = null;
+        this.predecessor = this;
     }
 
     // Asking this node to find id's successor
     public ChordNode findSuccessor(int id) {
+        System.out.println("Node: " + this.value + " Find successor for: " + id);
         ChordNode predecessorNode = findPredecessor(id);
+        System.out.println("Node: " + this.value + " Found successor: " + predecessorNode.successor.value);
         return predecessorNode.successor;
     }
 
@@ -35,9 +37,15 @@ public class ChordNode {
     public ChordNode findPredecessor(int id) {
         ChordNode tempNode = this;
         // It is a half closed interval.
+
         // while (id doesnot (n, successor] )
-        while (tempNode.value < tempNode.successor.value ? (id <= tempNode.value && id > tempNode.successor.value)
-                : !(id <= tempNode.value && id > tempNode.successor.value)) {
+        // while (tempNode.value < tempNode.successor.value ? (id <= tempNode.value &&
+        // id > tempNode.successor.value)
+        // : !(id <= tempNode.value && id > tempNode.successor.value)) {
+        // tempNode = tempNode.closestPrecedingFinger(id);
+        // }
+
+        while (!RangeChecker.checkOpenCloseRange(id, tempNode.value, tempNode.successor.value)) {
             tempNode = tempNode.closestPrecedingFinger(id);
         }
         return tempNode;
@@ -50,8 +58,13 @@ public class ChordNode {
             ChordNode fingerNode = fingerTable.get(i).node;
             // Do I need to check for interval??
             // if (finger[i]∈(n,id))
-            if (this.value < id ? (fingerNode.value > this.value && fingerNode.value < id)
-                    : !(fingerNode.value <= this.value && fingerNode.value >= id)) {
+            // if (this.value < id ? (fingerNode.value > this.value && fingerNode.value <
+            // id)
+            // : !(fingerNode.value <= this.value && fingerNode.value >= id)) {
+            // return fingerNode;
+            // }
+
+            if (RangeChecker.checkOpenRange(fingerNode.value, this.value, id)) {
                 return fingerNode;
             }
         }
@@ -97,12 +110,15 @@ public class ChordNode {
             FingerEntry previousFingerEntry = fingerTable.get(i);
             // if (finger[i+1].start belongs to [n, finger[i].node)
             // finger[i+1].node = finger[i].node
-
-            if (this.value < previousFingerEntry.node.value
-                    ? (nextFingerEntry.intervalStart >= this.value
-                            && nextFingerEntry.intervalStart < previousFingerEntry.node.value)
-                    : !(nextFingerEntry.intervalStart < this.value
-                            && nextFingerEntry.intervalStart >= previousFingerEntry.node.value)) {
+            /*
+             * if (this.value < previousFingerEntry.node.value ?
+             * (nextFingerEntry.intervalStart >= this.value && nextFingerEntry.intervalStart
+             * < previousFingerEntry.node.value) : !(nextFingerEntry.intervalStart <
+             * this.value && nextFingerEntry.intervalStart >=
+             * previousFingerEntry.node.value))
+             */
+            if (RangeChecker.checkCloseOpenRange(nextFingerEntry.intervalStart, this.value,
+                    previousFingerEntry.node.value)) {
                 nextFingerEntry.node = previousFingerEntry.node;
             } else {
                 nextFingerEntry.node = arbitaryNode.findSuccessor(nextFingerEntry.intervalStart);
@@ -126,8 +142,12 @@ public class ChordNode {
     public void updateFingerTable(ChordNode sNode, int i) {
         // if(s belongs to [n, finger[i].node)
         FingerEntry ithEntry = this.fingerTable.get(i);
-        if (this.value < ithEntry.node.value ? (sNode.value >= this.value && sNode.value < ithEntry.node.value)
-                : !(sNode.value < this.value && sNode.value >= ithEntry.node.value)) {
+        /*
+         * if (this.value < ithEntry.node.value ? (sNode.value >= this.value &&
+         * sNode.value < ithEntry.node.value) : !(sNode.value < this.value &&
+         * sNode.value >= ithEntry.node.value)) {
+         */
+        if (RangeChecker.checkCloseOpenRange(sNode.value, this.value, ithEntry.node.value)) {
             this.fingerTable.get(i).node = sNode;
             // Get first node preceding n
             ChordNode pNode = this.predecessor;
@@ -161,12 +181,13 @@ public class ChordNode {
             builder.append(" pre: None");
         }
 
-        builder.append(" finger: ");
+        builder.append(", finger: ");
         // Finger table
         for (int i = 1; i < m; i++) {
-            builder.append(fingerTable.get(i).node.value + ", ");
+            builder.append(
+                    "Start: " + fingerTable.get(i).intervalStart + " Node: " + fingerTable.get(i).node.value + ", ");
         }
-        builder.append(fingerTable.get(m).node.value);
+        builder.append("Start: " + fingerTable.get(m).intervalStart + " Node: " + fingerTable.get(m).node.value);
 
         return builder.toString();
     }
