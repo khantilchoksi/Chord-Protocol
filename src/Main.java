@@ -5,6 +5,18 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello");
         int m = 3; // 2 ** m = number of nodes
+        try {
+            m = Integer.parseInt(args[1]);
+        } catch (NumberFormatException nfe) {
+            System.out.println("ERROR: invalid value of m " + commands[1]);
+            System.exit(0);
+        }
+
+        if (m < 1) {
+            System.out.println("ERROR: m must be positive.");
+            System.exit(0);
+        }
+
         int maxNodes = (int) Math.pow(2, m);
 
         Scanner inputScanner = new Scanner(System.in);
