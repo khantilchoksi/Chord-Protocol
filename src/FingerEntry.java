@@ -30,4 +30,9 @@ public class FingerEntry {
     public void initializeStart() {
         this.intervalStart = (n + (int) Math.pow(2, k - 1)) % (int) (Math.pow(2, m));
     }
+
+    @Override
+    public String toString() {
+        return "Start: " + this.intervalStart + " Node: " + this.node.value;
+    }
 }

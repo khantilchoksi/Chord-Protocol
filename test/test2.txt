@@ -1,0 +1,27 @@
+// m = 3 
+
+add 0
+add 3
+join 3 0
+stab 3
+fix 3
+add 1
+join 1 0
+stab 1
+fix 1
+add 6
+join 6 0
+stab 6
+fix 6
+list
+
+
+My Final Output:
+show 0
+Node: 0 suc: 1 ,  pre: 6, finger: Start: 1 Node: 1, Start: 2 Node: 3, Start: 4 Node: 6
+show 1
+Node: 1 suc: 3 ,  pre: 0, finger: Start: 2 Node: 3, Start: 3 Node: 3, Start: 5 Node: 6
+show 3
+Node: 3 suc: 6 ,  pre: 1, finger: Start: 4 Node: 6, Start: 5 Node: 6, Start: 7 Node: 0
+show 6
+Node: 6 suc: 0 ,  pre: 3, finger: Start: 7 Node: 0, Start: 0 Node: 0, Start: 2 Node: 3
