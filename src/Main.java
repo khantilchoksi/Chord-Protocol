@@ -5,10 +5,16 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello");
         int m = 3; // 2 ** m = number of nodes
+
+        if (args.length < 1) {
+            System.out.println("ERROR: must pass value of m for chord ring.");
+            System.exit(0);
+        }
+
         try {
-            m = Integer.parseInt(args[1]);
+            m = Integer.parseInt(args[0]);
         } catch (NumberFormatException nfe) {
-            System.out.println("ERROR: invalid value of m " + commands[1]);
+            System.out.println("ERROR: invalid value of m " + args[0]);
             System.exit(0);
         }
 
