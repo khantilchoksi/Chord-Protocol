@@ -3,6 +3,6 @@
 setup: 
     sh setup.sh
 
-prereq: setup
+setup_preq: setup
 
-target: prereq 
+target: sh setup.sh 

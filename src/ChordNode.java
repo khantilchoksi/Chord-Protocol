@@ -44,6 +44,8 @@ public class ChordNode {
             ChordNode fingerNode = fingerTable.get(i).node;
             // Do I need to check for interval??
             // if (finger[i] belongs to (n,id))
+
+            //What if fingerNode is null??
             if (RangeChecker.checkOpenRange(fingerNode.value, this.value, id)) {
                 return fingerNode;
             }

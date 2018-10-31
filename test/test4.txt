@@ -1,0 +1,15 @@
+add 0
+add 3
+join 3 0
+stab 3
+fix 3
+add 1
+join 1 0
+stab 1
+fix 1
+list
+add 6
+join 6 0
+stab 6
+fix 6
+list

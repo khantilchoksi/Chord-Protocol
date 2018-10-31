@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 
 public class Main {
 
@@ -6,15 +7,53 @@ public class Main {
         System.out.println("Hello");
         int m = 3; // 2 ** m = number of nodes
 
+        Scanner inputScanner = null;
+        System.out.println("Arguments Received: "+args.length);
+        
+        for(String arg: args){
+            System.out.println(arg);
+        }
+
         if (args.length < 1) {
             System.out.println("ERROR: must pass value of m for chord ring.");
             System.exit(0);
         }
 
-        try {
-            m = Integer.parseInt(args[0]);
-        } catch (NumberFormatException nfe) {
-            System.out.println("ERROR: invalid value of m " + args[0]);
+        // Command Line Arguments passing
+        if (args.length == 3){
+            if(!args[0].equals("-i")){
+                System.out.println("ERROR: invalid argument type '-i' is expected.");
+                System.exit(0);
+            }
+
+            String inputFileName = args[1];
+
+            try{
+                File inputFile = new File(inputFileName);
+                inputScanner = new Scanner(inputFile);
+            }catch(Exception ex){
+                System.out.println("ERROR: can not read from file : " + args[1]);
+                System.exit(0);
+            }
+            
+            try {
+                m = Integer.parseInt(args[2]);
+            } catch (NumberFormatException nfe) {
+                System.out.println("ERROR: invalid value of m " + args[2]);
+                System.exit(0);
+            }
+
+        }else if(args.length == 1){
+            //No input file specified
+            try {
+                m = Integer.parseInt(args[0]);
+            } catch (NumberFormatException nfe) {
+                System.out.println("ERROR: invalid value of m " + args[0]);
+                System.exit(0);
+            }
+            inputScanner = new Scanner(System.in);
+        }else{
+            System.out.println("ERROR: must pass value of m for chord ring.");
             System.exit(0);
         }
 
@@ -25,19 +64,36 @@ public class Main {
 
         int maxNodes = (int) Math.pow(2, m);
 
-        Scanner inputScanner = new Scanner(System.in);
+        if(inputScanner == null){
+            System.out.println("ERROR: input can not be read.");
+            System.exit(0);
+        }
+
         TreeMap<Integer, ChordNode> treeMap = new TreeMap<>();
         ChordNode chordNode = null;
 
-        commandsloop: while (true) {
-            String inputString = inputScanner.nextLine();
+        while (true) {
+            String inputString = "";
+            try{
+                inputString = inputScanner.nextLine();
+            }catch(Exception ex){
+                //File output consumed
+                // Now take input from console
+                inputScanner = new Scanner(System.in);
+                inputString = inputScanner.nextLine();
+            }
+            
 
             String[] commands = inputString.split(" ");
             int id = 0;
+            if(commands.length == 0){
+                System.out.println("ERROR: Invalid command");
+            }
+
             switch (commands[0]) {
             case "end":
                 System.out.println("Bye, Thank you.");
-                break commandsloop;
+                System.exit(0);
 
             case "add":
                 if (commands.length != 2) {
@@ -108,24 +164,6 @@ public class Main {
                 ChordNode arbitaryChordNode = treeMap.get(id2);
                 chordNode.join(arbitaryChordNode);
 
-                // Stabilize
-                Iterator<Map.Entry<Integer, ChordNode>> iterator = treeMap.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<Integer, ChordNode> entry = iterator.next();
-                    // int key = entry.getKey();
-                    chordNode = entry.getValue();
-                    chordNode.stabilize();
-                }
-
-                // Fix finger table entries
-                Iterator<Map.Entry<Integer, ChordNode>> iteratorFingers = treeMap.entrySet().iterator();
-                while (iteratorFingers.hasNext()) {
-                    Map.Entry<Integer, ChordNode> entry = iteratorFingers.next();
-                    // int key = entry.getKey();
-                    chordNode = entry.getValue();
-                    chordNode.fixFingers();
-                }
-
                 break;
 
             case "drop":
@@ -150,6 +188,16 @@ public class Main {
                 if (!treeMap.containsKey(id)) {
                     System.out.println("ERROR: Node " + id + " does not exist.");
                     break;
+                }
+
+                try{
+                    chordNode = treeMap.get(id);
+                    chordNode.dropNode();
+                    treeMap.remove(id);
+                    System.out.println("Dropped node "+id);
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                    System.out.println("ERROR: can not drop node.");
                 }
 
                 break;
@@ -205,6 +253,24 @@ public class Main {
                     break;
                 }
 
+                // Stabilize
+                Iterator<Map.Entry<Integer, ChordNode>> iterator = treeMap.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<Integer, ChordNode> entry = iterator.next();
+                    // int key = entry.getKey();
+                    chordNode = entry.getValue();
+                    chordNode.stabilize();
+                }
+
+                // Fix finger table entries
+                Iterator<Map.Entry<Integer, ChordNode>> iteratorFingers = treeMap.entrySet().iterator();
+                while (iteratorFingers.hasNext()) {
+                    Map.Entry<Integer, ChordNode> entry = iteratorFingers.next();
+                    // int key = entry.getKey();
+                    chordNode = entry.getValue();
+                    chordNode.fixFingers();
+                }
+
                 chordNode = treeMap.get(id);
                 chordNode.stabilize();
 
@@ -252,6 +318,10 @@ public class Main {
                     // int key = entry.getKey();
                     chordNode = entry.getValue();
                     System.out.println(chordNode.toString());
+
+                    //Updated output according to repo
+                    // System.out.print("Nodes: ");
+                    // System.out.print(entry.getKey() + " , ");
                 }
 
                 break;
