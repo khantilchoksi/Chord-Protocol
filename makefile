@@ -1,8 +1,6 @@
-.PHONY: do_script
+.PHONY: setup
 
-setup: 
-    sh setup.sh
+setup:
+	sh setup.sh
 
-setup_preq: setup
-
-target: sh setup.sh 
+target: setup
