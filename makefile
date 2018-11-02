@@ -1,6 +1,6 @@
 .PHONY: setup
 
 setup:
-	sh setup.sh
+	sudo sh setup.sh
 
 target: setup

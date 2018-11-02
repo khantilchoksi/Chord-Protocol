@@ -34,8 +34,8 @@ public class FingerEntry {
     @Override
     public String toString() {
         //For understanding
-        return "Start: " + this.intervalStart + " Node: " + this.node.value;
+        // return "Start: " + this.intervalStart + " Node: " + this.node.value;
         // According to repo
-        // return ("" + this.node.value);
+        return ("" + this.node.value);
     }
 }

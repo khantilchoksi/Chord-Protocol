@@ -4,15 +4,15 @@ import java.io.*;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello");
+        //System.out.println("Hello");
         int m = 3; // 2 ** m = number of nodes
 
         Scanner inputScanner = null;
-        System.out.println("Arguments Received: "+args.length);
+        //System.out.println("Arguments Received: "+args.length);
         
-        for(String arg: args){
-            System.out.println(arg);
-        }
+        // for(String arg: args){
+        //     System.out.println(arg);
+        // }
 
         if (args.length < 1) {
             System.out.println("ERROR: must pass value of m for chord ring.");
@@ -82,7 +82,6 @@ public class Main {
                 inputScanner = new Scanner(System.in);
                 inputString = inputScanner.nextLine();
             }
-            
 
             String[] commands = inputString.split(" ");
             int id = 0;
@@ -92,12 +91,12 @@ public class Main {
 
             switch (commands[0]) {
             case "end":
-                System.out.println("Bye, Thank you.");
+                // System.out.println("Bye, Thank you.");
                 System.exit(0);
 
             case "add":
                 if (commands.length != 2) {
-                    System.out.println("SYNTAX ERROR: add expects" + 2 + " parameters not " + commands.length);
+                    System.out.println("SYNTAX ERROR: add expects " + 2 + " parameters not " + commands.length);
                     break;
                 }
 
@@ -127,7 +126,7 @@ public class Main {
 
             case "join":
                 if (commands.length != 3) {
-                    System.out.println("SYNTAX ERROR: join expects" + 3 + " parameters not " + commands.length);
+                    System.out.println("SYNTAX ERROR: join expects " + 3 + " parameters not " + commands.length);
                     break;
                 }
                 int id2 = 0;
@@ -168,7 +167,7 @@ public class Main {
 
             case "drop":
                 if (commands.length != 2) {
-                    System.out.println("SYNTAX ERROR: drop expects" + 2 + " parameters not " + commands.length);
+                    System.out.println("SYNTAX ERROR: drop expects " + 2 + " parameters not " + commands.length);
                     break;
                 }
 
@@ -300,6 +299,15 @@ public class Main {
                     break;
                 }
 
+                // // Fix all finger table entries of a node
+                Iterator<Map.Entry<Integer, ChordNode>> iteratorFixFingers = treeMap.entrySet().iterator();
+                while (iteratorFixFingers.hasNext()) {
+                    Map.Entry<Integer, ChordNode> entry = iteratorFixFingers.next();
+                    // int key = entry.getKey();
+                    chordNode = entry.getValue();
+                    chordNode.fixFingers();
+                }
+
                 chordNode = treeMap.get(id);
                 chordNode.fixFingers();
 
@@ -313,17 +321,20 @@ public class Main {
 
                 // List
                 Iterator<Map.Entry<Integer, ChordNode>> iteratorList = treeMap.entrySet().iterator();
+                System.out.print("Nodes: ");
                 while (iteratorList.hasNext()) {
                     Map.Entry<Integer, ChordNode> entry = iteratorList.next();
                     // int key = entry.getKey();
                     chordNode = entry.getValue();
-                    System.out.println(chordNode.toString());
+                    // According to old repo, print detialed node
+                    // System.out.println(chordNode.toString());
 
                     //Updated output according to repo
-                    // System.out.print("Nodes: ");
-                    // System.out.print(entry.getKey() + " , ");
+                    System.out.print(entry.getKey());
+                    if(iteratorList.hasNext())
+                        System.out.print(" , ");
                 }
-
+                System.out.println("");
                 break;
 
             default:
