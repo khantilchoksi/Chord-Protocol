@@ -4,7 +4,7 @@ CSC 591 Data Intensive Computing HW2
 Setup steps:  
 - VCL Environment (Ubuntu 16.04 LTS Base)  
 - Clone Github Repo  
-- Run `sudo make` (Please run with root permissions)  
+- Run `make` (Root permissions required)  
 - `chord <m>` or `chord -i inputfilepath <m>`  
 
 Assumptions / Understanding:   
